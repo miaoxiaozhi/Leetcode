@@ -1,0 +1,60 @@
+数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+示例 1：
+
+输入：n = 3
+输出：["((()))","(()())","(())()","()(())","()()()"]
+示例 2：
+
+输入：n = 1
+输出：["()"]
+
+
+//入门级别的回溯法，学会套路，秒懂十题！
+这个题是回溯法的题目，我在博客中已经总结了所有常见的算法模板，【LeetCode】代码模板，刷题必会，直接拿来用！
+
+判断回溯很简单，拿到一个问题，你感觉如果不穷举一下就没法知道答案，那就可以开始回溯了。
+
+一般回溯的问题有三种：
+
+Find a path to success 有没有解
+Find all paths to success 求所有解
+求所有解的个数
+求所有解的具体信息
+Find the best path to success 求最优解
+回溯法是一个剪枝了的二叉树。我们要得到的结果是可以 good leaf，如果不满足 good leaf 就继续向下搜索，搜索的时候需要满足一定的条件。
+
+左分支都是添加左括号，右分支都是添加右括号。
+
+那么我们在什么情况下添加左括号呢？很明显，最多能添加 n 个左括号，在递归调用的时候，在能传递到最底层的共用字符串中先添加 ”(“ ，然后 left-1，递归调用就可以。
+
+那什么时候添加右括号呢？当左括号个数大于右括号的个数时添加右括号。
+
+总之，向下搜索要满足两个条件：
+
+插入数量不超过n
+可以插入 ） 的前提是 ( 的数量大于 ）
+回溯法的代码套路是使用两个变量： res 和 path，res 表示最终的结果，path 保存已经走过的路径。如果搜到一个状态满足题目要求，就把 path 放到 res 中。
+
+ lc 和 rc 分别表示左括号的个数和右括号的个数。vector的push_back()方法调用的时候实际上是使用的值传递，也就是会进行赋值到vector里。
+ class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> res;
+        int lc = 0, rc = 0;
+        dfs(res, "", n, lc, rc);
+        return res;
+    }
+    void dfs(vector<string>& res, string path, int n, int lc, int rc) {
+        if (rc > lc || lc > n || rc > n) return;
+        if (lc == rc && lc == n) {
+            res.push_back(path);
+            return;
+        }
+        dfs(res, path + '(', n, lc + 1, rc);
+        dfs(res, path + ')', n, lc, rc + 1);
+    }
+};
+
+
+
+
